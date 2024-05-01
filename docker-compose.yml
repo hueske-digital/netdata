@@ -1,0 +1,35 @@
+version: '3'
+services:
+  app:
+    image: netdata/netdata
+    pid: host
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    networks:
+      proxy_apps:
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - app_config:/etc/netdata
+      - app_data:/var/lib/netdata
+      - app_cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  app_config:
+  app_data:
+  app_cache:
+
+networks:
+  proxy_apps:
+    name: proxy_apps
+    external: true
